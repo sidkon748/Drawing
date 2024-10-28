@@ -6,24 +6,23 @@
     <title>Interactive Drawing Application</title>
 </head>
 <body>
+    <h1>Drawing Tool</h1>
     <canvas id="myCanvas" width="440" height="550"></canvas>
-    <script src="main.js"></script>
-
-    <h1> Drawing Tool</h1>
     <form>
         <label>
-            <input type="radio" name="drawingTool" value="rectangle" checked> rectangle
+            <input type="radio" name="drawingTool" value="rectangle" checked> Rectangle
         </label><br>
         <label>
-            <input type="radio" name="drawingTool" value="line"> line
+            <input type="radio" name="drawingTool" value="line"> Line
         </label><br>
         <label>
-            <input type="radio" name="drawingTool" value="circle"> circle
+            <input type="radio" name="drawingTool" value="circle"> Circle
         </label><br>
     </form>
-    <h1> Drawing Tool</h1>
     <label for="colorSelect">Select Color:</label>
-    <input type="color" id="colorSelect" name="colorSelect" value="#002bff">
-    <button id="clearCanvas" > "Clear Canvas" </button>
+    <input type="color" id="colorSelect" name="colorSelect" value="#000000">
+    <button id="clearCanvas">Clear Canvas</button>
+
+    <script src="main.js"></script>
 </body>
 </html>

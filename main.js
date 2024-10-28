@@ -1,12 +1,18 @@
-// Configure the JavaScript for Drawing Context
-const canvas = document.getElementById('myCanvas'); // Get the canvas element by its ID
-const ctx = canvas.getContext('2d'); // Get the 2D drawing context
+// Get the canvas element and its 2D drawing context
+const canvas = document.getElementById('myCanvas');
+const ctx = canvas.getContext('2d');
 
-let isDrawing = false; // Flag to track whether drawing is in progress
+// Initialize drawing state variables
+let isDrawing = false; // Flag to track if the mouse is currently pressed down for drawing
 let startX = 0; // Starting X coordinate for drawing
 let startY = 0; // Starting Y coordinate for drawing
 let selectedColor = '#000000'; // Default color for drawing
-let selectedShape = 'line'; // Default shape for drawing (can be 'line', 'rectangle', or 'circle')
+let selectedShape = 'line'; // Default shape for drawing
+
+// Get references to the color picker and clear button
+const colorPicker = document.getElementById('colorSelect');
+const clearButton = document.getElementById('clearCanvas');
+const shapeSelectors = document.querySelectorAll('input[name="drawingTool"]'); // Get shape radio buttons
 
 // Event listener for mouse down event to start drawing
 canvas.addEventListener('mousedown', (mouse) => {
@@ -18,17 +24,22 @@ canvas.addEventListener('mousedown', (mouse) => {
 // Event listener for mouse up event to stop drawing
 canvas.addEventListener('mouseup', () => {
     isDrawing = false; // Set drawing flag to false
+    ctx.beginPath(); // Reset the drawing path to avoid connecting shapes
 });
 
 // Event listener for mouse movement to handle drawing shapes
 canvas.addEventListener('mousemove', (mouse) => {
-    if (!isDrawing) return; // If not drawing, exit the function
+    if (!isDrawing) return; // Exit if not currently drawing
 
-    ctx.strokeStyle = selectedColor; // Set the stroke color
-    ctx.lineWidth = 5; // Set the stroke width
-    ctx.lineJoin = 'round'; // Set line join style to round
+    // Set the drawing properties
+    ctx.strokeStyle = selectedColor; // Use the selected color for stroke
+    ctx.lineWidth = 5; // Set stroke width
+    ctx.lineJoin = 'round'; // Set the style for joining lines
 
-    // Draw the selected shape
+    // Clear the canvas for real-time drawing effect
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+
+    // Draw the selected shape based on user choice
     if (selectedShape === 'line') {
         ctx.beginPath(); // Start a new path
         ctx.moveTo(startX, startY); // Move to the starting point
@@ -37,25 +48,28 @@ canvas.addEventListener('mousemove', (mouse) => {
     } else if (selectedShape === 'rectangle') {
         ctx.strokeRect(startX, startY, mouse.offsetX - startX, mouse.offsetY - startY); // Draw rectangle
     } else if (selectedShape === 'circle') {
-        const radius = Math.sqrt(Math.pow(mouse.offsetX - startX, 2) + Math.pow(mouse.offsetY - startY, 2)); // Calculate radius
+        // Calculate radius based on distance from starting point to current mouse position
+        const radius = Math.sqrt(Math.pow(mouse.offsetX - startX, 2) + Math.pow(mouse.offsetY - startY, 2));
         ctx.beginPath(); // Start a new path
         ctx.arc(startX, startY, radius, 0, Math.PI * 2); // Draw circle
         ctx.stroke(); // Render the circle
     }
+});
 
-    // Update starting coordinates for the next segment
-    startX = mouse.offsetX; 
-    startY = mouse.offsetY;
+// Update selected shape based on user input from radio buttons
+shapeSelectors.forEach((selector) => {
+    selector.addEventListener('change', (event) => {
+        selectedShape = event.target.value; // Update selected shape when the radio button changes
+    });
 });
 
 // Event listener for color picker input to change drawing color
-const colorPicker = document.getElementById('colorPicker'); 
-colorPicker.addEventListener('input', (mouse) => {
-    selectedColor = mouse.target.value; // Update selected color based on user input
+colorPicker.addEventListener('input', (event) => {
+    selectedColor = event.target.value; // Update selected color based on user input
 });
 
 // Event listener for clear button to clear the canvas
-const clearButton = document.getElementById('clearCanvas'); 
-clearButton.addEventListener('click', () => {
+clearButton.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent form submission
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the entire canvas
 });
